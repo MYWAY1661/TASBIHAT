@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --royal-gold: #c5a059; --deep-emerald: #1a2a3a; --bg-gray: #fdfbf0; 
+            --card-bg: #ffffff; --text-color: #111111;
+        }
+        [data-theme="dark"] {
+            --bg-gray: #0f172a; --card-bg: #1e293b; --text-color: #f1f5f9; --deep-emerald: #020617;
+        }
+        body { 
+            margin: 0; padding: 0; background-color: var(--bg-gray); 
+            font-family: 'Cairo', sans-serif; -webkit-user-select: none; transition: background 0.3s ease;
+        }
+
+        /* خط التقدم الخفيف */
+        #progress-bar {
+            position: fixed; top: 0; right: 0; height: 4px;
+            background: var(--royal-gold); width: 0%; z-index: 1000; transition: width 0.1s;
+        }
+
+        .book-header { 
+            background: var(--deep-emerald); color: var(--royal-gold); padding: 15px; 
+            text-align: center; position: sticky; top: 0; z-index: 100; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-bottom: 3px solid var(--royal-gold); 
+        }
+        .book-header h1 { margin: 0; font-size: 1.2rem; font-weight: 900; }
+        .controls-row { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .ui-btn {
+            background: var(--royal-gold); color: white; border: none; padding: 6px 12px; 
+            border-radius: 12px; font-family: 'Cairo'; font-size: 0.75rem; font-weight: bold; 
+            cursor: pointer; box-shadow: 0 3px 0 #967a44; transition: 0.1s;
+        }
+        .ui-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #967a44; }
+        .return-link { color: #fff; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.3); padding: 5px 12px; border-radius: 12px; }
+        
+        .poem-container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .strip-body { background: var(--card-bg); border-radius: 20px; padding: 25px 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
+        
+        .poem-text { line-height: 1.8; font-family: 'Amiri', serif; color: var(--text-color); margin: 0; transition: font-size 0.2s; }
+        .poem-line { margin-bottom: 25px; border-bottom: 1px dashed rgba(179, 147, 89, 0.3); padding-bottom: 15px; }
+
+        .shatr-1 { display: block; text-align: right; font-weight: bold; margin-bottom: 5px; }
+        .shatr-2 { display: block; text-align: left; color: var(--royal-gold); }
+        [data-theme="dark"] .shatr-2 { color: #d4af37; }
+        /* هذا الكود يمنع ظهور الحدود أو التظليل عند الضغط على أي عنصر في الموقع */
+* {
+    -webkit-tap-highlight-color: transparent; /* يخفي الظل الملون عند اللمس في الهواتف */
+    outline: none; /* يخفي الإطار البرتقالي أو الأزرق */
+}
+
+/* إذا أردت تخصيص الكتب فقط */
+.book-wrapper:focus, .book-wrapper:active {
+    outline: none;
+    border: none;
+}
+    </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<div class="book-header">
+    <h1>الْمَنْظُومَةُ الْبَيْقُونِيَّةُ</h1>
+    <div class="controls-row">
+        <button class="ui-btn" onclick="toggleTheme()">🌙 الوضع</button>
+        <button class="ui-btn" onclick="changeFontSize(0.1)">➕ خط</button>
+        <button class="ui-btn" onclick="changeFontSize(-0.1)">➖ خط</button>
+        <button class="ui-btn" onclick="toggleTashkeel()" id="tashkeelBtn">إخفاء التشكيل</button>
+        <a href="../Library/library.html" class="return-link">✕ العودة</a>
+    </div>
+</div>
+
+<div class="poem-container">
+    <div class="strip-body">
+        <div id="poem-content" class="poem-text"></div>
+    </div>
+</div>
+
+<script>
+    const lines = [
+        "أَبْدَأُ بِالْحَمْدِ مُصَلِّياً عَلَى *** مُحَمَّدٍ خَيْرِ نَبِيٍّ أُرْسِلَا",
+        "وَذِي مِنْ أَقْسَامِ الحَدِيثِ عِدَّهْ *** وَكُلُّ وَاحِدٍ أَتَى وَحَدَّهْ",
+        "أَوَّلُهَا (الصَّحِيحُ) وَهْوَ مَا اتَّصَلْ *** إِسْنَادُهُ وَلَمْ يُشَذَّ أَوْ يُعَلْ",
+        "يَرْوِيهِ عَدْلٌ ضَابِطٌ عَنْ مِثْلِهِ *** مُعْتَمَدٌ فِي ضَبْطِهِ وَنَقْلِهِ",
+        "وَ(الْحَسَنُ) الْمَعْرُوفُ طُرْقاً وَغَدَتْ *** رِجَالُهُ لاَ كَالصَّحِيحِ اشْتَهَرَتْ",
+        "وَكُلُّ مَا عَنْ رُتْبَةِ الْحُسْنِ قَصُرْ *** فَهْوَ (الضَّعِيفُ) وَهْوَ أَقْسَاماً كُثُرْ",
+        "وَمَا أُضِيفَ لِلنَّبِي (الْمَرْفُوعُ) *** وَمَا لِتَابِعٍ هُوَ (الْمَقْطُوعُ)",
+        "وَ(الْمُسْنَدُ) الْمُتَّصِلُ الإِسْنَادِ مِنْ *** رَاوِيهِ حَتَّى الْمُصْطَفَى وَلَمْ يَبِنْ",
+        "وَمَا بِسَمْعِ كُلِّ رَاوٍ يَتَّصِلْ *** إِسْنَادُهُ لِلْمُصْطَفَى فَـ(الْمُتَّصِلْ)",
+        "(مُسَلْسَلٌ) قُلْ مَا عَلَى وَصْفٍ أَتَى *** مِثْلُ أَمَا وَاللَّهِ أَنْبَانِي الْفَتَى",
+        "كَذَاكَ قَدْ حَدَّثَنِيهِ قَائِماً *** أَوْ بَعْدَ أَنْ حَدَّثَنِي تَبَسَّمَا",
+        "(عَزِيزٌ) مَرْوِي اثْنَيْنِ أَوْ ثَلاَثَهْ *** (مَشْهُورٌ) مَرْوِي فَوْقَ مَا ثَلاَثَهْ",
+        "(مُعَنْعَنٌ) كَعَن سَعِيدٍ عَنْ كَرَمْ *** وَ(مُبْهَمٌ) مَا فِيهِ رَاوٍ لَمْ يُسَمْ",
+        "وَكُلُّ مَا قَلَّتْ رِجَالُهُ (عَلاَ) *** وَضِدُّهُ ذَاكَ الَّذِي قَد_ (نَزَلاَ)",
+        "وَمَا أَضَفْتَهُ إِلَى الأَصْحَابِ مِنْ *** قَوْلٍ وَفِعْلٍ فَهْوَ (مَوْقُوفٌ) زُكِنْ",
+        "(وَمُرْسَلٌ) مِنْهُ الصَّحَابِيُّ سَقَطْ *** وَقُلْ (غَرِيبٌ) مَا رَوَى رَاوٍ فَقَطْ",
+        "وَكُلُّ مَا لَمْ يَتَّصِلْ بِحَالِ *** إِسْنَادُهُ (مُنْقَطِعُ) الأَوْصَالِ",
+        "وَ(الْمُعْضَلُ) السَّاقِطُ مِنْهُ اثْنَانِ *** وَمَا أَتَى (مُدَلَّساً) نَوْعَانِ",
+        "الأَوَّلُ الاِسْقَاطُ لِلشَّيْخِ وَأَنْ *** يَنْقُلَ عَمَّنْ فَوْقَهُ بِعَنْ وَأَنْ",
+        "وَالثَّانِ لاَ يُسْقِطُهُ لَكِنْ يَصِفْ *** أَوْصَافَهُ بِمَا بِهِ لاَ يَنْعَرِفْ",
+        "وَمَا يُخَالِفْ ثِقَةٌ فِيهِ الْمَلَا *** فَـ(الشَّاذُّ) وَ(الْمَقْلُوبُ) قِسْمَانِ تَلاَ",
+        "إِبْدَالُ رَاوٍ مَا بِرَاوٍ قِسْمُ *** وَقَلْبُ إِسْنَادٍ لِمَتْنٍ قِسْمُ",
+        "وَ(الْفَرْدُ) مَا قَيَّدْتَهُ بِثِقَةِ *** أَوْ جَمْعٍ أَوْ قَصْرٍ عَلَى رِوَايَةِ",
+        "وَمَا بِعِلَّةٍ غُمُوضٍ أَوْ خَفَا *** (مُعَلَّلٌ) عِنْدَهُمُ قَدْ عُرِفَا",
+        "وَذُو اخْتِلاَفِ سَنَدٍ أَوْ مَتْنِ *** (مُضْطَرِبٌ) عِنْدَ أُهَيْلِ الْفَنِّ",
+        "وَ(الْمُدْرَجَاتُ) فِي الْحَدِيثِ مَا أَتَتْ *** مِنْ بَعْضِ أَلْفَاظِ الرُّوَاةِ اتَّصَلَتْ",
+        "وَمَا رَوَى كُلِّ قَرِينٍ عَنْ أَخِهْ *** (مُدَبَّجٌ) فَاعْرِفْهُ حَقّاً وَانْتَخِهْ",
+        "مُتَّفِقٌ لَفْظاً وَخَطّاً (مُتَّفِقْ) *** وَضِدُّهُ فِيمَا ذَكَرْنَا (الْمُفْتَرِقْ)",
+        "(مُؤْتَلِفٌ) مُتَّفِقُ الْخَطِّ فَقَطْ *** وَضِدُّهُ (مُخْتَلِفٌ) فَاخْشَ الْغَلَطْ",
+        "وَ(الْمُنْكَرُ) الْفَرْدُ بِهِ رَاوٍ غَدَا *** تَعْدِيلُهُ لاَ يْحْمِلُ التَّفَرُّدَا",
+        "(مَتْرُوكُهُ) مَا وَاحِدٌ بِهِ انْفَرَدْ *** وَأَجْمَعُوا لِضَعْفِهِ فَهْوَ كَرَدّ",
+        "وَالكَذِبُ الْمُخْتَلَقُ الْمَصْنُوعُ *** عَلَى النَّبِي فَذَلِكَ (الْمَوْضُوعُ)",
+        "وَقَدْ أَتَتْ كَالْجَوْهَرِ الْمَكْنُونِ *** سَمَّيْتُهَا (مَنْظُومَةَ الْبَيْقُونِي)",
+        "فَوْقَ الثَّلاَثِينَ بِأَرْبَعٍ أَتَتْ *** أَبْيَاتُهَا تَمَّتْ بِخَيْرٍ خُتِمَتْ"
+    ];
+
+    let showTashkeel = true;
+    let currentFontSize = 1.4;
+
+    function renderPoem() {
+        const container = document.getElementById('poem-content');
+        container.innerHTML = '';
+        lines.forEach(line => {
+            let processedText = showTashkeel ? line : removeTashkeel(line);
+            let parts = processedText.split("***");
+            container.innerHTML += `
+                <div class="poem-line" style="font-size: ${currentFontSize}rem">
+                    <span class="shatr-1">${parts[0]}</span>
+                    <span class="shatr-2">${parts[1] || ''}</span>
+                </div>`;
+        });
+    }
+
+    function removeTashkeel(text) {
+        return text.replace(/([^\u0621-\u064A\s\d{}*./])/g, "");
+    }
+
+    function toggleTashkeel() {
+        showTashkeel = !showTashkeel;
+        document.getElementById('tashkeelBtn').innerText = showTashkeel ? "إخفاء التشكيل" : "إظهار التشكيل";
+        renderPoem();
+    }
+
+    function changeFontSize(val) {
+        currentFontSize += val;
+        if (currentFontSize < 1) currentFontSize = 1;
+        if (currentFontSize > 2.5) currentFontSize = 2.5;
+        renderPoem();
+    }
+
+    function toggleTheme() {
+        const doc = document.documentElement;
+        if (doc.getAttribute('data-theme') === 'dark') {
+            doc.removeAttribute('data-theme');
+        } else {
+            doc.setAttribute('data-theme', 'dark');
+        }
+    }
+
+    // تحديث خط التقدم
+    window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById("progress-bar").style.width = scrolled + "%";
+    };
+
+    renderPoem();
+</script>
+</body>
+</html>
