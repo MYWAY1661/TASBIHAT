@@ -3,17 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>نَفَحَاتٌ إِيمَانِيَّةٌ</title>
-    <link rel="icon" type="image/png" href="leader/LogoNafahat.png">
+    
+    <title>نَفَحَاتٌ إِيمَانِيَّةٌ | المنهج الصافي والذكر الحكيم</title>
+
+    <link rel="icon" type="image/png" href="LogoNafahat.png">
+    <link rel="apple-touch-icon" href="LogoNafahat.png">
+
+    <meta name="description" content="نفحات إيمانية | حيث يطمئن القلب بالذكر الحكيم والنص الصحيح. بوابتكم اليومية لعيش أنوار السنة النبوية، مع بث مباشر لإذاعة القرآن الكريم وقنوات صوتية متخصصة. نحن نحفظ ميراثاً نبوياً يضيء حياتك صوتاً وكتابة.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="نفحات إيمانية">
+    <meta property="og:title" content="نفحات إيمانية | ميراث نبوي يضيء حياتك">
+    <meta property="og:description" content="نفحات إيمانية | حيث يطمئن القلب بالذكر الحكيم والنص الصحيح. بوابتكم اليومية لعيش أنوار السنة النبوية، مع بث مباشر لإذاعة القرآن الكريم وقنوات صوتية متخصصة تأخذكم في رحلة إيمانية فريدة. حيث السكينة، والعبرة في الأثر الموثق، واليقين في منهج أهل السنة والجماعة. نحن لا ننقل كلمات، بل نحفظ ميراثاً نبوياً يضيء حياتك صوتاً وكتابة.">
+    <meta property="og:image" content="https://myway1661.github.io/TASBIHAT/LogoNafahat.png">
+    <meta property="og:url" content="https://myway1661.github.io/TASBIHAT/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://myway1661.github.io/TASBIHAT/LogoNafahat.png">
     
     <style>
-        /* تثبيت الهيكل ومنع الاهتزاز الجلي الأفق */
+        /* كود الـ CSS الخاص بك كما هو دون أي تغيير للحفاظ على تصميم الـ 3D والمنع من الاهتزاز */
         html, body { 
             background-color: #000000 !important; 
             overscroll-behavior: none; 
-            overflow-x: hidden; /* منع الحركة يميناً ويساراً تماماً */
+            overflow-x: hidden; 
             width: 100%;
-            position: fixed; /* تثبيت الجسم الرئيسي لمنع سحب المتصفح */
+            position: fixed; 
             height: 100%;
         }
 
@@ -25,7 +40,6 @@
             display: block !important; 
         }
 
-        /* منع ظهور حدود زرقاء أو رمادية عند الضغط على الأزرار في الهواتف */
         * {
             -webkit-tap-highlight-color: transparent;
             outline: none !important;
@@ -42,7 +56,6 @@
             overflow: hidden;
         }
 
-        /* --- القائمة السحرية المطورة 3D --- */
         .magic-nav {
             position: fixed; top: 75px; left: 50%; transform: translateX(-50%) translateY(-20px);
             background: rgba(10, 25, 41, 0.95); backdrop-filter: blur(15px); 
@@ -65,7 +78,6 @@
             box-shadow: 0 0 15px rgba(179, 147, 89, 0.5);
         }
 
-        /* --- شريط التبويبات العلوي المطور --- */
         .header-3d { 
             display: flex; justify-content: center; perspective: 1000px; 
             width: 100%; z-index: 2000; height: 55px; margin-bottom: 5px;
@@ -142,6 +154,7 @@
     </div>
 
     <script>
+        // السكريبت الخاص بك كاملاً كما هو لضمان بقاء الوظائف البرمجية
         let isAdmin = false;
         const globalIntroAudio = new Audio('leader/intro11.mp3');
         globalIntroAudio.preload = 'auto';
