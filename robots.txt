@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /leader/admin.html
+
+Sitemap: https://myway1661.github.io/TASBIHAT/sitemap.xml
